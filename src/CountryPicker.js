@@ -23,6 +23,7 @@ import cca2List from '../data/cca2';
 import { getHeightPercent } from './ratio';
 import CloseButton from './CloseButton';
 import countryPickerStyles from './CountryPicker.style';
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 let countries = null;
 let Emoji = null;
@@ -43,15 +44,10 @@ if (isEmojiable) {
   Emoji = <View />;
 }
 
-export const getAllCountries = () => {
-  return cca2List.map((cca2) => {
-    return {...countries[cca2], cca2};
-  });
-};
-
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
 export default class CountryPicker extends Component {
+
   static propTypes = {
     cca2: React.PropTypes.string.isRequired,
     translation: React.PropTypes.string,
@@ -59,13 +55,12 @@ export default class CountryPicker extends Component {
     onClose: React.PropTypes.func,
     closeable: React.PropTypes.bool,
     children: React.PropTypes.node,
-    countryList: React.PropTypes.array,
     styles: React.PropTypes.object,
   }
 
   static defaultProps = {
     translation: 'eng',
-    countryList: cca2List
+    onClose: () => {},
   }
 
   static renderEmojiFlag(cca2, emojiStyle) {
@@ -98,7 +93,7 @@ export default class CountryPicker extends Component {
 
     this.state = {
       modalVisible: false,
-      cca2List: props.countryList,
+      cca2List,
       dataSource: ds.cloneWithRows(cca2List),
     };
 
@@ -226,14 +221,8 @@ export default class CountryPicker extends Component {
           onPress={() => this.setState({ modalVisible: true })}
           activeOpacity={0.7}
         >
-          {
-            this.props.children ?
-              this.props.children
-            :
-              (<View style={styles.touchFlag}>
-                {CountryPicker.renderFlag(this.props.cca2)}
-              </View>)
-          }
+          <Icon size={15} name="chevron-down" color="#1F5F7C" />
+
         </TouchableOpacity>
         <Modal
           visible={this.state.modalVisible}
